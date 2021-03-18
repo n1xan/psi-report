@@ -1,0 +1,26 @@
+{
+  "name": "psi-ci",
+  "version": "1.0.0",
+  "description": "Google Page Speed Insights Utility",
+  "main": "run.js",
+  "dependencies": {
+    "psi": "^4.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/n1xan/psi-report.git"
+  },
+  "keywords": [
+    "psi"
+  ],
+  "author": "Nikolay Avramov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/n1xan/psi-report/issues"
+  },
+  "homepage": "https://github.com/n1xan/psi-report#readme"
+}
