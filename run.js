@@ -1,4 +1,12 @@
 const psi = require('psi');
+const Influx = require("influx");
+const influx = new Influx.InfluxDB({
+  host: "localhost",
+  database: "googlepagespeed",
+  port: 8086
+});
+module.exports = influx;
+
 var args = process.argv.slice(2);
 var url = args[1];
 if(url == undefined){
@@ -10,14 +18,37 @@ if(url == undefined){
   const { data } = await psi(url);
   console.log('Speed score:', data.lighthouseResult.categories.performance.score);
 
-  // Output a formatted report to the terminal
-  await psi.output(url);
-  console.log('Done');
+  // Write date to InfluxDB
+  let date1 = Date.parse(data.analysisUTCTimestamp);
+  let date = date1 * 1000000;
 
-  // Supply options to PSI and get back speed
-  const data2 = await psi(url, {
-    nokey: 'true',
-    strategy: 'desktop'
-  });
-  console.log('Speed score:', data2.data.lighthouseResult.categories.performance.score);
+  influx
+      .writePoints([
+        {
+          measurement: "googlepagespeed",
+          tags: {
+            pageName: data.lighthouseResult.requestedUrl,
+            run: 1,
+          },
+          fields: {
+            testID: data.analysisUTCTimestamp,
+            speedScore: data.lighthouseResult.categories.performance.score,
+          },
+          timestamp: date,
+        }
+      ])
+      .then(() => {
+        console.log("Finished writing in influxDB")
+        return influx.query(`
+          select * from googlepagespeed
+          order by time desc
+          `);
+      })
+      .catch(err => {
+        console.error(`Error creating Influx database!` + err);
+      });
+
+      // Output a formatted report to the terminal
+      await psi.output(url);
+      console.log('Done');
 })();

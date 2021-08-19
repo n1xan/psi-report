@@ -4,7 +4,8 @@
   "description": "Google Page Speed Insights Utility",
   "main": "run.js",
   "dependencies": {
-    "psi": "^4.1.0"
+    "psi": "^4.1.0",
+    "influx": "^5.8.0"
   },
   "devDependencies": {},
   "scripts": {
