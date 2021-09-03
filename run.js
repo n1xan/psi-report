@@ -19,8 +19,8 @@ if(url == undefined){
   console.log('Speed score:', data.lighthouseResult.categories.performance.score);
 
   // Write date to InfluxDB
-  let date1 = Date.parse(data.analysisUTCTimestamp);
-  let date = date1 * 1000000;
+  let resultDate = Date.parse(data.analysisUTCTimestamp);
+  let date = resultDate * 1000000;
 
   influx
       .writePoints([
@@ -33,6 +33,11 @@ if(url == undefined){
           fields: {
             testID: data.analysisUTCTimestamp,
             speedScore: data.lighthouseResult.categories.performance.score,
+            firstContentfulPaint: data.lighthouseResult.audits['first-contentful-paint'].numericValue,
+            speedindex: data.lighthouseResult.audits['speed-index'].numericValue,
+            timeToInteractive: data.lighthouseResult.audits['interactive'].numericValue,
+            firstMeaningfulPaint: data.lighthouseResult.audits['first-meaningful-paint'].numericValue,
+            unusedJavascript: data.lighthouseResult.audits['unused-javascript'].numericValue
           },
           timestamp: date,
         }
